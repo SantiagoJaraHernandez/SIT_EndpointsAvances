@@ -1,12 +1,12 @@
 from rest_framework import viewsets
 from .models import (
     Course, Semester, CourseSemester, Students, Teachers,
-    CourseStudents, CourseTeachers, Grades, Tasks, Role, User, CourseSemesterTasks
+    CourseStudents, CourseTeachers, Grades, Tasks, Role, CourseSemesterTasks
 )
 from .serializers import (
     CourseSerializer, SemesterSerializer, CourseSemesterSerializer, StudentSerializer, 
     TeacherSerializer, CourseStudentsSerializer, CourseTeachersSerializer, GradesSerializer, 
-    TasksSerializer, RoleSerializer, UserSerializer, CourseSemesterTasksSerializer
+    TasksSerializer, RoleSerializer, CourseSemesterTasksSerializer
 )
 from django.shortcuts import render
 
@@ -52,10 +52,6 @@ class TasksViewSet(viewsets.ModelViewSet):
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 class CourseSemesterTasksViewSet(viewsets.ModelViewSet):
     queryset = CourseSemesterTasks.objects.all()

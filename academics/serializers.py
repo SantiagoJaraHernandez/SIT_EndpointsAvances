@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Course, Semester, CourseSemester, Students, Teachers, 
-    CourseStudents, CourseTeachers, Grades, Tasks, Role, User, CourseSemesterTasks
+    CourseStudents, CourseTeachers, Grades, Tasks, Role, CourseSemesterTasks
 )
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -52,11 +52,6 @@ class TasksSerializer(serializers.ModelSerializer):
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
-        fields = '__all__'
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
         fields = '__all__'
 
 class CourseSemesterTasksSerializer(serializers.ModelSerializer):

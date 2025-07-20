@@ -1,3 +1,4 @@
+#from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
 
@@ -133,16 +134,3 @@ class Teachers(models.Model):
         managed = False
         db_table = 'teachers'
 
-
-class User(models.Model):
-    id_user = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.CharField(max_length=100)
-    password = models.CharField(max_length=255)
-    status = models.CharField(max_length=1)
-    id_role = models.IntegerField()
-
-    class Meta:
-        managed = False
-        db_table = 'user'

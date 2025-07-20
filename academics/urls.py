@@ -2,7 +2,7 @@ from rest_framework import routers
 from .views import (
     CourseViewSet, SemesterViewSet, CourseSemesterViewSet, StudentViewSet, TeacherViewSet,
     CourseStudentsViewSet, CourseTeachersViewSet, GradesViewSet, TasksViewSet, 
-    RoleViewSet, UserViewSet, CourseSemesterTasksViewSet
+    RoleViewSet, CourseSemesterTasksViewSet
 )
 
 router = routers.DefaultRouter()
@@ -16,7 +16,7 @@ router.register(r'course-teachers', CourseTeachersViewSet)
 router.register(r'grades', GradesViewSet)
 router.register(r'tasks', TasksViewSet)
 router.register(r'roles', RoleViewSet)
-router.register(r'users', UserViewSet)
+#router.register(r'users', UserViewSet)
 router.register(r'course-semester-tasks', CourseSemesterTasksViewSet)
 
 urlpatterns = router.urls
