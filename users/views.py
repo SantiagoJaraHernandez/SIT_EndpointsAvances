@@ -8,7 +8,9 @@ from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .serializers import UserSerializer, LoginSerializer
+from academics.models import Students
+
+from .serializers import UserSerializer, LoginSerializer, UserUpdateSerializer
 from .tokens import account_activation_token
 
 User = get_user_model()
@@ -36,9 +38,20 @@ class ActivateUserView(APIView):
 
     def get(self, request, uid, token):
         user = get_object_or_404(User, id_user=uid)
+
         if account_activation_token.check_token(user, token):
             user.status = 'A'
+            user.is_active = True
             user.save()
+
+            # 🔁 Actualiza el estado del estudiante
+            try:
+                student = Students.objects.get(email=user.email)
+                student.status = 'A'
+                student.save(using='default')  # Asegura que se guarde si tienes múltiples DBs
+            except Students.DoesNotExist:
+                pass  # Puedes registrar un log si lo necesitas
+
             return Response({"message": "Cuenta activada correctamente."}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Token inválido o expirado."}, status=status.HTTP_400_BAD_REQUEST)
@@ -114,3 +127,51 @@ class LogoutView(APIView):
             return Response({"message": "Logout exitoso."}, status=200)
         except TokenError as e:
             return Response({"error": f"Token inválido o expirado: {str(e)}"}, status=400)
+        
+
+class ListUsersView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]  # Puedes personalizar el permiso según el rol
+
+
+class DeleteUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, user_id):
+        user = get_object_or_404(User, id_user=user_id)
+        
+        # También puedes eliminar el student si quieres
+        try:
+            student = Students.objects.get(email=user.email)
+            student.delete()
+        except Students.DoesNotExist:
+            pass
+
+        user.delete()
+        return Response({"message": "Usuario eliminado correctamente."}, status=status.HTTP_200_OK)
+
+
+class UpdateUserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=UserUpdateSerializer)
+    def put(self, request):
+        user = request.user
+        serializer = UserUpdateSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        for field, value in serializer.validated_data.items():
+            setattr(user, field, value)
+        user.save()
+
+        return Response({
+            "message": "Datos actualizados correctamente.",
+            "user": {
+                "id_user": user.id_user,
+                "name": user.name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "status": user.status
+            }
+        }, status=status.HTTP_200_OK)

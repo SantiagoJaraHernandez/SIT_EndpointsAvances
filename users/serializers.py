@@ -42,3 +42,15 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
+
+class UserUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False, max_length=150)
+    last_name = serializers.CharField(required=False, max_length=150)
+    email = serializers.EmailField(required=False)
+
+    def validate_email(self, value):
+        user = self.context['request'].user
+        if User.objects.filter(email=value).exclude(id_user=user.id_user).exists():
+            raise serializers.ValidationError("Este correo ya está en uso por otro usuario.")
+        return value
