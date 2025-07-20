@@ -1,264 +1,138 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Explorador de Endpoints - SIT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SIT API - Sistema de Intervención Temprana</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              500: '#3b82f6',
-              600: '#2563eb',
-            },
-            dark: {
-              800: '#1e293b',
-              900: '#0f172a',
-            },
-            light: '#f9fafb'
-          },
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    /* Personalización adicional */
-    .bg-glass {
-      background: rgba(30, 41, 59, 0.8);
-      backdrop-filter: blur(10px);
+    /* Extra para smooth scroll y detalles */
+    html {
+      scroll-behavior: smooth;
     }
-    pre {
-      transition: all 0.3s ease;
+    /* Botones mejorados */
+    .btn-primary {
+      @apply bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition transform hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1 cursor-pointer inline-block;
     }
-    .btn-glow:hover {
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    .btn-primary:focus {
+      @apply outline-none ring-4 ring-blue-300;
     }
-    select:focus, input:focus, textarea:focus {
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    /* Footer con fondo oscuro */
+    footer {
+      background-color: #1e293b;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-dark-900 to-dark-800 text-light min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex flex-col">
 
-  <div class="bg-glass w-full max-w-5xl rounded-2xl shadow-2xl p-6 space-y-6 border border-gray-700/50">
-    <div class="text-center space-y-2">
-      <div class="flex items-center justify-center space-x-3">
-        <i class="fas fa-network-wired text-primary-500 text-3xl"></i>
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-primary-500 to-blue-400 bg-clip-text text-transparent">SIT API Explorer</h1>
+  <!-- HEADER -->
+  <header class="bg-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-6">
+      <div class="flex items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-3 2.7-7 6-7s6 4 6 7-2.7 7-6 7-6-4-6-7z" />
+          <circle cx="12" cy="11" r="2" />
+        </svg>
+        <h1 class="text-2xl font-bold text-blue-700">SIT API</h1>
       </div>
-      <p class="text-gray-400 text-sm">Explorador interactivo de los endpoints del sistema</p>
+      <nav class="space-x-6 hidden md:flex">
+        <a href="#about" class="text-blue-700 hover:text-blue-900 font-semibold transition">Qué es SIT</a>
+        <a href="#features" class="text-blue-700 hover:text-blue-900 font-semibold transition">Funcionalidades</a>
+        <a href="#start" class="text-blue-700 hover:text-blue-900 font-semibold transition">Cómo Empezar</a>
+        <a href="#contact" class="text-blue-700 hover:text-blue-900 font-semibold transition">Contacto</a>
+        <a href="/swagger/" class="btn-primary">Probar API</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <label class="block space-y-1">
-        <span class="block text-sm font-medium text-gray-300 flex items-center">
-          <i class="fas fa-link mr-2 text-primary-500"></i>
-          Seleccionar Endpoint
-        </span>
-        <select id="endpoint" class="w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition">
-          <option value="">-- Elige un endpoint --</option>
-          <option value="courses/">Cursos</option>
-          <option value="semesters/">Semestres</option>
-          <option value="course-semesters/">Cursos x Semestre</option>
-          <option value="students/">Estudiantes</option>
-          <option value="teachers/">Docentes</option>
-          <option value="course-students/">Estudiantes x Curso</option>
-          <option value="course-teachers/">Docentes x Curso</option>
-          <option value="grades/">Notas</option>
-          <option value="tasks/">Tareas</option>
-          <option value="roles/">Roles</option>
-          <option value="users/">Usuarios</option>
-          <option value="course-semester-tasks/">Tareas x Curso-Semestre</option>
+  <!-- HERO / INTRO -->
+  <section class="flex-grow flex flex-col justify-center items-center text-center px-6 py-20 max-w-4xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-blue-900 mb-6 leading-tight">
+      Sistema de Intervención Temprana <br class="hidden md:block" /> (SIT) - API RESTful
+    </h2>
+    <p class="text-blue-700 text-lg max-w-3xl mb-10">
+      Plataforma especializada para la gestión integral de programas de intervención temprana, facilitando la administración de cursos, estudiantes, docentes y tareas con autenticación segura.
+    </p>
+    <a href="/swagger/" class="btn-primary text-lg">
+      Explorar Documentación & Probar API
+    </a>
+  </section>
 
-          <!-- Nuevos endpoints para autenticación -->
-          <option value="users/register/">Register</option>
-          <option value="users/login/">Login</option>
-          <option value="users/logout/">Logout</option>
-        </select>
-      </label>
-
-      <label class="block space-y-1">
-        <span class="block text-sm font-medium text-gray-300 flex items-center">
-          <i class="fas fa-code mr-2 text-primary-500"></i>
-          Método HTTP
-        </span>
-        <select id="method" class="w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition">
-          <option value="GET" class="bg-green-900/30 text-green-400">GET</option>
-          <option value="POST" class="bg-yellow-900/30 text-yellow-400">POST</option>
-          <option value="PUT" class="bg-blue-900/30 text-blue-400">PUT</option>
-          <option value="DELETE" class="bg-red-900/30 text-red-400">DELETE</option>
-        </select>
-      </label>
-
-      <label class="block space-y-1">
-        <span class="block text-sm font-medium text-gray-300 flex items-center">
-          <i class="fas fa-id-card mr-2 text-primary-500"></i>
-          ID (opcional)
-        </span>
-        <input type="text" id="itemId" placeholder="Ej: 123" 
-               class="w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition placeholder-gray-500">
-      </label>
+  <!-- SECCIÓN QUÉ ES SIT -->
+  <section id="about" class="bg-white py-16 px-6 shadow-inner">
+    <div class="max-w-5xl mx-auto text-center">
+      <h3 class="text-3xl font-bold text-blue-800 mb-6">¿Qué es el Sistema de Intervención Temprana?</h3>
+      <p class="text-blue-700 max-w-3xl mx-auto text-lg leading-relaxed">
+        SIT es un sistema diseñado para ayudar a profesionales y centros educativos a gestionar de forma eficaz los programas de intervención temprana. Con una API robusta y segura, permite controlar información de cursos, asignación de docentes, matrícula de estudiantes y seguimiento de tareas, todo accesible vía servicios REST.
+      </p>
     </div>
+  </section>
 
-    <label class="block space-y-1">
-      <span class="block text-sm font-medium text-gray-300 flex items-center">
-        <i class="fas fa-code mr-2 text-primary-500"></i>
-        Cuerpo de la solicitud (JSON)
-      </span>
-      <textarea id="payload" rows="6" placeholder='{"nombre": "Ejemplo",
- "activo": true
-}' 
-                class="w-full p-3 rounded-lg bg-gray-700/50 text-white font-mono text-sm resize-y border border-gray-600 focus:border-primary-500 transition placeholder-gray-500"></textarea>
-    </label>
-
-    <!-- NUEVO campo para Access Token en logout -->
-    <label class="block space-y-1">
-      <span class="block text-sm font-medium text-gray-300 flex items-center">
-        <i class="fas fa-key mr-2 text-primary-500"></i>
-        Access Token (para Logout)
-      </span>
-      <input type="text" id="accessToken" placeholder="Bearer access_token aquí" 
-             class="w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition placeholder-gray-500" />
-    </label>
-
-    <div class="flex justify-center">
-      <button onclick="callAPI()" class="btn-glow bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold py-3 px-8 rounded-full transition-all transform hover:scale-105 flex items-center space-x-2 shadow-lg">
-        <i class="fas fa-play"></i>
-        <span>Ejecutar Solicitud</span>
-      </button>
-    </div>
-
-    <div class="space-y-2">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold flex items-center space-x-2">
-          <i class="fas fa-reply text-primary-500"></i>
-          <span>Respuesta</span>
-        </h2>
-        <button id="copyBtn" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded flex items-center space-x-1 transition">
-          <i class="far fa-copy"></i>
-          <span>Copiar</span>
-        </button>
+  <!-- FUNCIONALIDADES -->
+  <section id="features" class="py-16 px-6 max-w-7xl mx-auto">
+    <h3 class="text-3xl font-bold text-blue-900 mb-12 text-center">Funcionalidades principales</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-blue-800">
+      <div class="space-y-4 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linejoin="round" stroke-linecap="round" d="M8 9l3 3-3 3" />
+          <path stroke-linejoin="round" stroke-linecap="round" d="M13 15h6" />
+          <path stroke-linejoin="round" stroke-linecap="round" d="M12 5v14" />
+        </svg>
+        <h4 class="text-xl font-semibold">Gestión de Cursos</h4>
+        <p class="text-sm leading-relaxed">Crear, editar y listar cursos de intervención con fechas y responsables asignados.</p>
       </div>
-      <div class="relative">
-        <pre id="response" class="bg-gray-900/80 text-green-400 p-4 rounded-xl overflow-auto whitespace-pre-wrap max-h-96 shadow-inner border border-gray-700 font-mono text-sm"></pre>
-        <div id="loading" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center hidden">
-          <div class="animate-pulse-slow flex items-center space-x-2 text-primary-500">
-            <i class="fas fa-circle-notch fa-spin"></i>
-            <span>Procesando solicitud...</span>
-          </div>
-        </div>
+      <div class="space-y-4 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linejoin="round" stroke-linecap="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <h4 class="text-xl font-semibold">Manejo de Estudiantes</h4>
+        <p class="text-sm leading-relaxed">Registro seguro y seguimiento individual de estudiantes activos en programas.</p>
+      </div>
+      <div class="space-y-4 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linejoin="round" stroke-linecap="round" d="M8 9l3 3-3 3" />
+          <path stroke-linejoin="round" stroke-linecap="round" d="M13 15h6" />
+          <path stroke-linejoin="round" stroke-linecap="round" d="M12 5v14" />
+        </svg>
+        <h4 class="text-xl font-semibold">Autenticación Segura</h4>
+        <p class="text-sm leading-relaxed">Sistema de login y logout basado en tokens JWT para máxima seguridad.</p>
+      </div>
+      <div class="space-y-4 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linejoin="round" stroke-linecap="round" d="M9 12h6" />
+          <path stroke-linejoin="round" stroke-linecap="round" d="M12 9v6" />
+        </svg>
+        <h4 class="text-xl font-semibold">Gestión de Tareas</h4>
+        <p class="text-sm leading-relaxed">Creación, edición y seguimiento de tareas asignadas a estudiantes y docentes.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <script>
-    async function callAPI() {
-      const endpoint = document.getElementById("endpoint").value;
-      const method = document.getElementById("method").value;
-      const itemId = document.getElementById("itemId").value;
-      const payload = document.getElementById("payload").value;
-      const accessToken = document.getElementById("accessToken").value.trim();
-      const responseBox = document.getElementById("response");
-      const loading = document.getElementById("loading");
-      
-      // Validación básica
-      if (!endpoint) {
-        responseBox.textContent = "❌ Por favor selecciona un endpoint";
-        return;
-      }
-      
-      if ((method === "POST" || method === "PUT") && !payload) {
-        responseBox.textContent = "❌ Se requiere un cuerpo JSON para este método";
-        return;
-      }
+  <!-- CÓMO EMPEZAR -->
+  <section id="start" class="bg-white py-16 px-6 shadow-inner">
+    <div class="max-w-4xl mx-auto text-center">
+      <h3 class="text-3xl font-bold text-blue-800 mb-6">¿Cómo empezar a usar la API?</h3>
+      <ol class="list-decimal list-inside text-blue-700 text-left max-w-xl mx-auto space-y-4 text-lg">
+        <li>Obtén tu token de autenticación registrándote o con tu cuenta asignada.</li>
+        <li>Usa el endpoint base <code class="bg-gray-200 rounded px-1 py-0.5 font-mono">/api/</code> para acceder a los recursos.</li>
+        <li>Consulta la documentación y prueba los endpoints en nuestra interfaz Swagger.</li>
+        <li>Incluye el token JWT en el encabezado <code class="bg-gray-200 rounded px-1 py-0.5 font-mono">Authorization: Bearer &lt;token&gt;</code> para las peticiones protegidas.</li>
+      </ol>
+      <a href="/swagger/" class="btn-primary mt-8 inline-block">Ir a Swagger</a>
+    </div>
+  </section>
 
-      let url = `/api/${endpoint}`;
-      if (itemId && (method === "GET" || method === "PUT" || method === "DELETE")) {
-        url += itemId + "/";
-      }
+  <!-- CONTACTO -->
+  <section id="contact" class="py-16 px-6 max-w-4xl mx-auto text-center text-blue-900">
+    <h3 class="text-3xl font-bold mb-6">Contacto</h3>
+    <p class="mb-6">¿Tienes dudas o necesitas soporte? Escríbenos a:</p>
+    <a href="mailto:soporte@sitapi.com" class="text-blue-600 hover:underline font-semibold">soporte@sitapi.com</a>
+  </section>
 
-      try {
-        // Mostrar loader
-        loading.classList.remove('hidden');
-        responseBox.textContent = '';
-        
-        const options = {
-          method,
-          headers: {
-            "Content-Type": "application/json",
-          }
-        };
+  <!-- FOOTER -->
+  <footer class="text-gray-400 py-6 text-center text-sm select-none">
+    &copy; 2025 SIT API - Sistema de Intervención Temprana. Todos los derechos reservados.
+  </footer>
 
-        // Agregar access token solo para logout endpoint
-        if (endpoint === "users/logout/" && accessToken) {
-          options.headers["Authorization"] = accessToken;
-        }
-        
-        if (method !== "GET" && payload) {
-          options.body = payload;
-        }
-
-        const res = await fetch(url, options);
-        const data = await res.json();
-        
-        // Color diferente para errores
-        if (!res.ok) {
-          responseBox.classList.remove('text-green-400');
-          responseBox.classList.add('text-red-400');
-        } else {
-          responseBox.classList.remove('text-red-400');
-          responseBox.classList.add('text-green-400');
-        }
-        
-        responseBox.textContent = JSON.stringify(data, null, 2);
-      } catch (err) {
-        responseBox.textContent = "⚠️ Error: " + err.message;
-        responseBox.classList.remove('text-green-400');
-        responseBox.classList.add('text-red-400');
-      } finally {
-        loading.classList.add('hidden');
-      }
-    }
-    
-    // Copiar respuesta al portapapeles
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      const responseText = document.getElementById('response').textContent;
-      navigator.clipboard.writeText(responseText).then(() => {
-        const copyBtn = document.getElementById('copyBtn');
-        copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Copiado!</span>';
-        setTimeout(() => {
-          copyBtn.innerHTML = '<i class="far fa-copy"></i><span>Copiar</span>';
-        }, 2000);
-      });
-    });
-    
-    // Cambiar colores según método seleccionado
-    document.getElementById('method').addEventListener('change', function() {
-      const method = this.value;
-      const select = this;
-      
-      // Reset clases
-      select.className = 'w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition';
-      
-      // Añadir clases según método
-      if (method === 'GET') {
-        select.classList.add('bg-green-900/30', 'text-green-400');
-      } else if (method === 'POST') {
-        select.classList.add('bg-yellow-900/30', 'text-yellow-400');
-      } else if (method === 'PUT') {
-        select.classList.add('bg-blue-900/30', 'text-blue-400');
-      } else if (method === 'DELETE') {
-        select.classList.add('bg-red-900/30', 'text-red-400');
-      }
-    });
-  </script>
 </body>
 </html>
