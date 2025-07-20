@@ -77,6 +77,11 @@
           <option value="roles/">Roles</option>
           <option value="users/">Usuarios</option>
           <option value="course-semester-tasks/">Tareas x Curso-Semestre</option>
+
+          <!-- Nuevos endpoints para autenticación -->
+          <option value="users/register/">Register</option>
+          <option value="users/login/">Login</option>
+          <option value="users/logout/">Logout</option>
         </select>
       </label>
 
@@ -112,6 +117,16 @@
  "activo": true
 }' 
                 class="w-full p-3 rounded-lg bg-gray-700/50 text-white font-mono text-sm resize-y border border-gray-600 focus:border-primary-500 transition placeholder-gray-500"></textarea>
+    </label>
+
+    <!-- NUEVO campo para Access Token en logout -->
+    <label class="block space-y-1">
+      <span class="block text-sm font-medium text-gray-300 flex items-center">
+        <i class="fas fa-key mr-2 text-primary-500"></i>
+        Access Token (para Logout)
+      </span>
+      <input type="text" id="accessToken" placeholder="Bearer access_token aquí" 
+             class="w-full p-3 rounded-lg bg-gray-700/50 text-white border border-gray-600 focus:border-primary-500 transition placeholder-gray-500" />
     </label>
 
     <div class="flex justify-center">
@@ -150,6 +165,7 @@
       const method = document.getElementById("method").value;
       const itemId = document.getElementById("itemId").value;
       const payload = document.getElementById("payload").value;
+      const accessToken = document.getElementById("accessToken").value.trim();
       const responseBox = document.getElementById("response");
       const loading = document.getElementById("loading");
       
@@ -180,6 +196,11 @@
             "Content-Type": "application/json",
           }
         };
+
+        // Agregar access token solo para logout endpoint
+        if (endpoint === "users/logout/" && accessToken) {
+          options.headers["Authorization"] = accessToken;
+        }
         
         if (method !== "GET" && payload) {
           options.body = payload;
