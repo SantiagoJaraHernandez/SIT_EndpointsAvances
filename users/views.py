@@ -141,7 +141,7 @@ class DeleteUserView(APIView):
     def delete(self, request, user_id):
         user = get_object_or_404(User, id_user=user_id)
         
-        # También puedes eliminar el student si quieres
+        
         try:
             student = Students.objects.get(email=user.email)
             student.delete()
